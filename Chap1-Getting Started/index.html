@@ -11,10 +11,64 @@
             margin: 0;
             overflow: hidden;
         }
+
+        .black_overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            z-index: 1001;
+            opacity: 0.8;
+        }
+
+        .white-content {
+            display: none;
+            position: absolute;
+            top: 25%;
+            left: 25%;
+            width: 50%;
+            height: 70px;
+            padding: 16px;
+            border: 2px solid grey;
+            background-color: black;
+            z-index: 1002;
+        }
+
+        .big-message {
+            width: 80%;
+            height: auto;
+            margin: 0 auto;
+            padding: 5px;
+            text-align: center;
+            color: white;
+            font-family: serif;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
+    <!-- Lightbox to show when WebGL is not supported -->
+    <div id="lightbox" class="white-content">
+        <div class="big-message" id="message">
+
+        </div>
+        <a href="javascript:void(0)" onclick="hideLightBox()">Close</a>
+    </div>
+    <div id="fade" class="black_overlay"></div>
     <script>
+        var hasGL = detectWebGL()
+        if (hasGL)
+        {
+            showLightBox("WebGL is supported");
+        }
+        else
+        {
+            showLightBox("WebGL is NOT supported");
+        }
+
         // global variables
         var renderer;
         var scene;
@@ -60,6 +114,59 @@
 
             // call the render function
             renderer.render(scene, camera);
+        }
+
+        function detectWebGL()
+        {
+            var testCanvas = document.createElement('canvas');
+            var gl = null;
+            try 
+            {
+                gl = testCanvas.getContext('webgl');
+            }
+            catch(ex)
+            {
+                gl = null;
+            }
+
+            if (gl == null)
+            {
+                try 
+                {
+                    gl = testCanvas.getContext('experimental-webgl');
+                }
+                catch(ex)
+                {
+                    gl = null;
+                }
+            }
+
+            if (gl)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        function showLightBox(msg)
+        {
+            var lightBox = document.getElementById('lightbox');
+            lightBox.style.display = 'block';
+
+            var fadeBox = document.getElementById('fade');
+            fadeBox.style.display = 'block';
+
+            var message = document.getElementById('message');
+            message.textContent = msg;
+        }
+
+        function hideLightBox()
+        {
+            var lightBox = document.getElementById('lightbox');
+            lightBox.style.display = 'none';
+
+            var fadeBox = document.getElementById('fade');
+            fadeBox.style.display = 'none';
         }
     </script>
 </body>
