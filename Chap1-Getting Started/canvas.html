@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>01.01 - CanvasRenderer - Skeleton</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/CanvasRenderer.js"></script>
+    <script src="../libs/Projector.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // global variables
+        var renderer;
+        var scene;
+        var camera;
+
+        // calls the init function when the window is done loading
+        window.onload = init;
+
+        function init ()
+        {
+            // create a scene, that will hold all our elements
+            // such as objects, cameras and lights
+            scene = new THREE.Scene();
+
+            // create a camera, which defines where we looking at
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // position and point the camera to the center
+            camera.position.x = 15;
+            camera.position.y = 16;
+            camera.position.z = 13;
+            camera.lookAt(scene.position);
+
+            // create a renderer, set the background color and size
+            renderer = new THREE.CanvasRenderer();
+            renderer.setClearColor(0x000000, 1.0);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // create a cube and add to scene
+            var cubeGeometry = new THREE.BoxGeometry(
+                10 * Math.random(),
+                10 * Math.random(),
+                10 * Math.random()
+            );
+
+            var cubeMaterial = new THREE.MeshNormalMaterial();
+
+            var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+            scene.add(cube);
+
+            // add the output of the renderer to the html element
+            document.body.appendChild(renderer.domElement);
+
+            // call the render function
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>

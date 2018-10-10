@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>01.01 - WebGLRenderer - Skeleton</title>
+    <script src="../libs/three.js"></script>
+    <script src="../libs/CSS3DRenderer.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        var content = '<div>' + 
+                '<h1>This is an H1 Element</h1>' +
+                '<span class="large">Hello Three.js cookbook</span>' +
+                '<textarea>And this is a textarea</textarea>' +
+            '</div>';
+        
+        // global variables
+        var renderer;
+        var scene;
+        var camera;
+
+        // calls the init function when the window is done loading
+        window.onload = init;
+
+        function init ()
+        {
+            // create a scene, that will hold all our elements
+            // such as objects, cameras and lights
+            scene = new THREE.Scene();
+
+            // create a camera, which defines where we looking at
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            // position and point the camera to the center
+            camera.position.x = 500;
+            camera.position.y = 500;
+            camera.position.z = 500;
+            camera.lookAt(scene.position);
+
+            // create a renderer, set the background color and size
+            renderer = new THREE.CSS3DRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement)
+
+            var cssElement = createCSS3DObject(content);
+            cssElement.position.set(100, 100, 100);
+            scene.add(cssElement);
+
+            // call the render function
+            renderer.render(scene, camera);
+        }
+
+        function createCSS3DObject(content)
+        {
+            var wrapper = document.createElement('div');
+            wrapper.innerHTML = content;
+            var div = wrapper.firstChild;
+
+            // set some value on the div to style it
+            div.style.width = '370px';
+            div.style.height = '370px';
+            div.style.opacity = 0.7;
+            div.style.background = new THREE.Color(Math.random() * 0xFFFFFF).getStyle();
+
+            // create a CSS3DObject
+            var object = new THREE.CSS3DObject(div);
+            return object;
+        }
+    </script>
+</body>
+</html>
