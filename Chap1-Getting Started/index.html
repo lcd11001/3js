@@ -70,32 +70,33 @@
         }
 
         // global variables
-        var renderer;
-        var scene;
-        var camera;
+        var _renderer;
+        var _scene;
+        var _camera;
 
         // calls the init function when the window is done loading
-        window.onload = init;
+        if (hasGL)
+        {
+            window.onload = init;
+        }
 
         function init ()
         {
             // create a scene, that will hold all our elements
             // such as objects, cameras and lights
-            scene = new THREE.Scene();
+            _scene = new THREE.Scene();
 
             // create a camera, which defines where we looking at
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            _camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
             // position and point the camera to the center
-            camera.position.x = 15;
-            camera.position.y = 16;
-            camera.position.z = 13;
-            camera.lookAt(scene.position);
+            _camera.position.set(15, 16, 19);
+            _camera.lookAt(_scene.position);
 
             // create a renderer, set the background color and size
-            renderer = new THREE.WebGLRenderer();
-            renderer.setClearColor(0x000000, 1.0);
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            _renderer = new THREE.WebGLRenderer();
+            _renderer.setClearColor(0x000000, 1.0);
+            _renderer.setSize(window.innerWidth, window.innerHeight);
 
             // create a cube and add to scene
             var cubeGeometry = new THREE.BoxGeometry(
@@ -107,13 +108,14 @@
             var cubeMaterial = new THREE.MeshNormalMaterial();
 
             var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            scene.add(cube);
+            cube.name = 'cube';
+            _scene.add(cube);
 
             // add the output of the renderer to the html element
-            document.body.appendChild(renderer.domElement);
+            document.body.appendChild(_renderer.domElement);
 
             // call the render function
-            renderer.render(scene, camera);
+            render();
         }
 
         function detectWebGL()
@@ -167,6 +169,13 @@
 
             var fadeBox = document.getElementById('fade');
             fadeBox.style.display = 'none';
+        }
+
+        function render()
+        {
+            _renderer.render(_scene, _camera);
+            _scene.getObjectByName('cube').rotation.z += 0.05;
+            requestAnimationFrame(render);
         }
     </script>
 </body>
