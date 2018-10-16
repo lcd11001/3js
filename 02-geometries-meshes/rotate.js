@@ -1,3 +1,5 @@
+"use strict";
+
 // global variables
 var _renderer;
 var _scene;
@@ -8,6 +10,8 @@ function init ()
     // create a scene, that will hold all our elements
     // such as objects, cameras and lights
     _scene = new THREE.Scene();
+    loadBackground('../data/textures/stars.png', _scene);
+
 
     // create a camera, which defines where we looking at
     _camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -100,3 +104,20 @@ function loadTexture(textureUrl, material)
 
     console.log('loadTexture ' + textureUrl);
 }
+
+function loadBackground(textureUrl, scene)
+{
+    var textureLoader = new THREE.TextureLoader();
+    textureLoader.load(textureUrl, (texture) => {
+        console.log('loadBackground DONE ' + textureUrl);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set( 4, 4 );
+
+        scene.background = texture;
+        scene.needsUpdate = true;
+    });
+
+    console.log('loadBackground ' + textureUrl);
+}
+
