@@ -41,6 +41,8 @@ function init ()
 
     loadModel('../data/models/monster.json', '../data/textures/');
 
+    loadOthers('../data/sound/bgm.m4a');
+
     // call the render function
     render();
 }
@@ -53,6 +55,15 @@ function render()
     cube.rotation.z += 0.05;
     
     _renderer.render(_scene, _camera);
+}
+
+// other
+function loadOthers(res)
+{
+    var fileLoader = new THREE.FileLoader();
+    fileLoader.load(res, onLoadCallback, onProgressCallback, onErrorCallback);
+
+    console.log('loadOthers ' + res);
 }
 
 // Model
@@ -69,9 +80,10 @@ function loadModel(modelUrl, texturesPath)
 
 function loadTexture(textureUrl)
 {
-    var texture = THREE.ImageUtils.loadTexture(textureUrl, null, onLoadCallback, onErrorCallback);
+    var textureLoader = new THREE.TextureLoader();
+    textureLoader.load(textureUrl, onLoadCallback, onProgressCallback, onErrorCallback);
 
-    console.log('texture after loadTexture call', texture);
+    console.log('loadTexture ' + textureUrl);
 }
 
 function onLoadCallback(loaded)
