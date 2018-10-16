@@ -1,0 +1,1 @@
+%NODE_PATH%/.bin/cross-env %NODE_PATH%/.bin/http-server ./ -p 8080

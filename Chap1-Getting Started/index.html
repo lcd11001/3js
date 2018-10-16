@@ -132,6 +132,8 @@
             }
             addControls(_control);
 
+            setupKeyControls();
+
             // call the render function
             render();
         }
@@ -220,6 +222,43 @@
             // object - name - min value - max value
             gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
             gui.add(controlObject, 'scale', 0.01, 2);
+        }
+
+        function setupKeyControls()
+        {
+            var cube = _scene.getObjectByName('cube');
+
+            document.onkeydown = function (e) {
+                if (! e.repeat)
+                {
+                    // key is being press
+                    return;
+                }
+
+                // key is being held down
+                switch (e.keyCode)
+                {
+                    // arrow left
+                    case 37:
+                        cube.rotation.x += 0.1;
+                    break;
+
+                    // arrow up
+                    case 38:
+                    cube.rotation.z -= 0.1;
+                    break;
+
+                    // arrow right
+                    case 39:
+                        cube.rotation.x -= 0.1;
+                    break;
+
+                    // arrow down
+                    case 40:
+                        cube.rotation.z += 0.1;
+                    break;
+                }
+            }
         }
     </script>
 </body>
