@@ -39,6 +39,8 @@ function init ()
 
     loadTexture('../data/textures/box.jpeg');
 
+    loadModel('../data/models/monster.json', '../data/textures/');
+
     // call the render function
     render();
 }
@@ -52,6 +54,18 @@ function render()
     
     _renderer.render(_scene, _camera);
 }
+
+// Model
+function loadModel(modelUrl, texturesPath)
+{
+    var jsonLoader = new THREE.JSONLoader();
+    jsonLoader.setResourcePath(texturesPath);
+    jsonLoader.load(modelUrl, onLoadCallback, onProgressCallback, onErrorCallback);
+
+    console.log('loadModel ' + modelUrl);
+}
+
+// Texture
 
 function loadTexture(textureUrl)
 {
