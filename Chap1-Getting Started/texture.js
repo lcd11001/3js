@@ -37,6 +37,8 @@ function init ()
     // add the output of the renderer to the html element
     document.body.appendChild(_renderer.domElement);
 
+    loadTexture('../data/textures/box.jpeg');
+
     // call the render function
     render();
 }
@@ -49,5 +51,34 @@ function render()
     cube.rotation.z += 0.05;
     
     _renderer.render(_scene, _camera);
+}
+
+function loadTexture(textureUrl)
+{
+    var texture = THREE.ImageUtils.loadTexture(textureUrl, null, onLoadCallback, onErrorCallback);
+
+    console.log('texture after loadTexture call', texture);
+}
+
+function onLoadCallback(loaded)
+{
+    if (loaded.length)
+    {
+        console.log('loaded', loaded.length);
+    }
+    else
+    {
+        console.log('loaded', loaded)
+    }
+}
+
+function onProgressCallback(progress)
+{
+    console.log('progress', progress)
+}
+
+function onErrorCallback(error)
+{
+    console.log('error', error)
 }
 
