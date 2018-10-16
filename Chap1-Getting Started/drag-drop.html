@@ -4,19 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="user-scalable=0, width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Loading</title>
+    <title>Drag and Drop</title>
     <script src="../libs/three.js"></script>
     <script src="../libs/stats.min.js"></script>
-    <script src="./texture.js"></script>
+    <script src="./drag-drop.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
         }
+
+        #holder {
+            border: 5px dashed #ccc;
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+        }
+        #holder.hover {
+            border: 10px dashed rgb(174, 209, 17);
+        }
+        #holder.leave {
+            border: 5px dashed rgb(17, 62, 209);
+        }
     </style>
 </head>
 <body>
+    <div id="holder"  draggable="true"></div>
     <script>
+        setupDragDrop();
+
         init();
     </script>
 </body>
