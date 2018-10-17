@@ -38,7 +38,7 @@ function init ()
     earth.name = 'earth';
     earth.receiveShadow = true;
     earth.rotation.x = -0.5;
-    _scene.position.set(0, 1, 0);
+    earth.position.set(0, 1, 0);
     _scene.add(earth);
 
     // add light
@@ -48,6 +48,7 @@ function init ()
     light.shadowMapEnabled = true;
     light.shadow.camera.near = 20;
     light.shadow.camera.far = 100;
+    light.lookAt(earth.position);
     _scene.add(light);
 
     // add pivot
@@ -69,6 +70,8 @@ function init ()
     moon.castShadow = true;
     pivotPoint.add(moon);
 
+    loadFont('../data/fonts/earth-moon.json', createText);
+
     // add the output of the renderer to the html element
     document.body.appendChild(_renderer.domElement);
 
@@ -81,15 +84,60 @@ function render()
     requestAnimationFrame(render);
     
     let earth = _scene.getObjectByName('earth');
-    earth.rotation.y += 0.01;
+    earth && (earth.rotation.y += 0.01);
 
     let pivotPoint = _scene.getObjectByName('pivotPoint');
-    pivotPoint.rotation.y -= 0.05;
+    pivotPoint && (pivotPoint.rotation.y -= 0.05);
 
     let moon = _scene.getObjectByName('moon');
-    moon.rotation.y += 0.01;
+    moon && (moon.rotation.y += 0.01);
     
     _renderer.render(_scene, _camera);
+}
+
+function createText(font)
+{
+    var textGeo = new THREE.TextGeometry("EARTH - MOON", {
+        font: font,
+
+        size: 5,
+        height: 3,
+        curveSegments: 2,
+
+        bevelThickness: 2,
+        bevelSize: 5,
+        bevelEnable: true
+    });
+
+    textGeo.computeBoundingBox();
+    // textGeo.computeVertexNormals();
+
+    var textMat = new THREE.MeshPhongMaterial({ color: 0xFFFF00 });
+
+    var text = new THREE.Mesh(textGeo, textMat);
+
+    text.lookAt(_camera.position);
+    
+    var centerOffset = -0.5 * ( textGeo.boundingBox.max.x - textGeo.boundingBox.min.x );
+    var centerCamera = _camera.position.x / 2;
+    text.position.set(centerOffset - centerCamera, 0, 0);
+    
+    // text.rotation.z = Math.PI / 2;
+ 
+    // text.lookAt(_camera.position);
+   
+    _scene.add(text);
+}
+
+// font
+function loadFont(fontName, callback)
+{
+    var fontLoader = new THREE.FontLoader();
+    fontLoader.load(fontName, (font) => {
+        callback && callback(font);
+    });
+
+    console.log('loadFont ' + fontName);
 }
 
 // texture
