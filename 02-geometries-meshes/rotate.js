@@ -129,7 +129,7 @@ function createText(font)
     _scene.add(text);
 }
 
-// font
+// font: https://gero3.github.io/facetype.js/
 function loadFont(fontName, callback)
 {
     var fontLoader = new THREE.FontLoader();
