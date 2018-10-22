@@ -12,7 +12,10 @@ function init ()
     // such as objects, cameras and lights
     _scene = new THREE.Scene();
 
-    loadModel('monster', '../data/models/monster.json', '../data/textures/');
+    // loadModelJson('monster', '../data/models/monster.json', '../data/textures/');
+
+    // initLoader('../data/textures/Porsche/');
+    loadModelFbx('monster', '../data/models/car_porsche_911_GTS_2018_carpaint_diffuse.fbx', '../data/textures/Porsche/');
 
     // create a camera, which defines where we looking at
     _camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -66,13 +69,13 @@ function render()
 }
 
 // Model
-function loadModel(name, modelUrl, texturesPath)
+function loadModelJson(name, modelUrl, texturesPath)
 {
     var jsonLoader = new THREE.JSONLoader();
     jsonLoader.setResourcePath(texturesPath);
     jsonLoader.load(modelUrl, 
         (geometry, materials) => {
-            console.log('loadModel [' + name +'] finish', materials);
+            console.log('loadModelJson [' + name +'] finish', materials);
 
             // let material = materials[0];
             // material.morphTargets = true;
@@ -92,7 +95,22 @@ function loadModel(name, modelUrl, texturesPath)
         }, 
         null, null);
 
-    console.log('loadModel ' + modelUrl);
+    console.log('loadModelJson ' + modelUrl);
+}
+
+function loadModelFbx(name, modelUrl, texturesPath)
+{
+    var fbxLoader = new THREE.FBXLoader();
+    fbxLoader.setResourcePath(texturesPath);
+    fbxLoader.load(modelUrl, 
+        (sceneGraph) => {
+            console.log('loadModelFbx [' + name +'] finish', sceneGraph);
+            sceneGraph.name = name;
+            _scene.add(sceneGraph);
+        },
+        null, null);
+
+    console.log('loadModelFbx ' + modelUrl);
 }
 
 function addControls(controlObject)
@@ -119,6 +137,13 @@ function initLights()
 {
     var light = new THREE.AmbientLight(0xffffff);
     _scene.add(light);
+}
+
+function initLoader(path)
+{
+    let tgaLoader = new THREE.TGALoader(THREE.DefaultLoadingManager);
+    tgaLoader.setPath(path);
+    THREE.Loader.Handlers.add(/\.tga$/i, tgaLoader);
 }
 
 
