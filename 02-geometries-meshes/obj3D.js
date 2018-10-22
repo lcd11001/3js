@@ -27,11 +27,15 @@ function init ()
     _renderer.setSize(window.innerWidth, window.innerHeight);
 
     _control = new function() {
-        this.rotationSpeed = 0.005;
         this.scale = 0.01;
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        
+        this.rx = 0;
+        this.ry = 0;
+        this.rz = 0;
+
+        this.px = 0;
+        this.py = 0;
+        this.pz = 0;
     }
     addControls(_control);
 
@@ -51,9 +55,11 @@ function render()
     let monster = _scene.getObjectByName('monster');
     if (monster)
     {
-        monster.rotation.x += _control.rotationSpeed;
         monster.scale.set(_control.scale, _control.scale, _control.scale);
-        monster.position.set(_control.x, _control.y, _control.z);
+
+        monster.position.set(_control.px, _control.py, _control.pz);
+
+        monster.rotation.set(_control.rx * Math.PI / 180, _control.ry * Math.PI / 180, _control.rz * Math.PI / 180);   
     }
     
     _renderer.render(_scene, _camera);
@@ -67,6 +73,17 @@ function loadModel(name, modelUrl, texturesPath)
     jsonLoader.load(modelUrl, 
         (geometry, materials) => {
             console.log('loadModel [' + name +'] finish', materials);
+
+            // let material = materials[0];
+            // material.morphTargets = true;
+            materials.forEach(element => {
+                element.morphTargets = true;
+                // element.needsUpdate = true;
+                
+                // element.map.flipY = false;
+                // element.map.needsUpdate = true;
+            });
+
             let mesh = new THREE.Mesh(geometry, materials);
             
             mesh.translation = geometry.center;
@@ -82,11 +99,20 @@ function addControls(controlObject)
 {
     var gui = new dat.GUI();
     // object - name - min value - max value
-    gui.add(controlObject, 'rotationSpeed', -0.1, 0.1);
     gui.add(controlObject, 'scale', 0.01, 2);
-    gui.add(controlObject, 'x', -10, 10);
-    gui.add(controlObject, 'y', -10, 10);
-    gui.add(controlObject, 'z', -10, 10);
+    
+    let f1 = gui.addFolder('position');
+    f1.open();
+    f1.add(controlObject, 'px', -10, 10);
+    f1.add(controlObject, 'py', -10, 10);
+    f1.add(controlObject, 'pz', -10, 10);
+
+    let f2 = gui.addFolder('rotation');
+    f2.close();
+    f2.add(controlObject, 'rx', 0, 360);
+    f2.add(controlObject, 'ry', 0, 360);
+    f2.add(controlObject, 'rz', 0, 360);
+
 }
 
 function initLights() 
