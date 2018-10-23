@@ -30,7 +30,7 @@ function init ()
     _renderer.setSize(window.innerWidth, window.innerHeight);
 
     _control = new function() {
-        this.scale = 0.01;
+        this.scale = 0.05;
         
         this.rx = 0;
         this.ry = 0;

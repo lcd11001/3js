@@ -867,9 +867,33 @@ THREE.FBXLoader = ( function () {
 
 					if ( node.parent ) node.userData.transformData.parentMatrixWorld = node.parent.matrix;
 
-					var transform = generateTransform( node.userData.transformData );
+					let transformData = node.userData.transformData;
+					var transform = generateTransform( transformData );
 
-					node.applyMatrix( transform );
+					// LCD
+					var gTranslationM = new THREE.Matrix4();
+					var gRotationM = new THREE.Matrix4();
+					var gScalingM = new THREE.Matrix4();
+					if ( 'GeometricTranslation' in transformData )
+					{
+						gTranslationM.setPosition( tempVec.fromArray( transformData.GeometricTranslation ) );
+					}
+					if ( 'GeometricRotation' in transformData )
+					{
+						var array = transformData.GeometricRotation.map( THREE.Math.degToRad );
+						array.push( transformData.eulerOrder );
+						gRotationM.makeRotationFromEuler( tempEuler.fromArray( array ) );
+					}
+					if ( 'GeometricScaling' in transformData )
+					{
+						gScalingM.scale( tempVec.fromArray( transformData.GeometricScaling ) );
+					}
+
+					let finalTransform = transform.multiply(gTranslationM).multiply(gRotationM).multiply(gScalingM);
+					
+					node.applyMatrix( finalTransform );
+
+					// node.applyMatrix( transform );
 
 				}
 
@@ -1313,6 +1337,11 @@ THREE.FBXLoader = ( function () {
 			if ( 'RotationOffset' in modelNode ) transformData.rotationOffset = modelNode.RotationOffset.value;
 			if ( 'RotationPivot' in modelNode ) transformData.rotationPivot = modelNode.RotationPivot.value;
 
+			// LCD
+			if ( 'GeometricTranslation' in modelNode ) transformData.GeometricTranslation = modelNode.GeometricTranslation.value;
+			if ( 'GeometricRotation' in modelNode ) transformData.GeometricRotation = modelNode.GeometricRotation.value;
+			if ( 'GeometricScaling' in modelNode ) transformData.GeometricScaling = modelNode.GeometricScaling.value;
+
 			model.userData.transformData = transformData;
 
 		},
@@ -1610,9 +1639,10 @@ THREE.FBXLoader = ( function () {
 			if ( 'RotationOrder' in modelNode ) transformData.eulerOrder = getEulerOrder( modelNode.RotationOrder.value );
 			if ( 'InheritType' in modelNode ) transformData.inheritType = parseInt( modelNode.InheritType.value );
 
-			if ( 'GeometricTranslation' in modelNode ) transformData.translation = modelNode.GeometricTranslation.value;
-			if ( 'GeometricRotation' in modelNode ) transformData.rotation = modelNode.GeometricRotation.value;
-			if ( 'GeometricScaling' in modelNode ) transformData.scale = modelNode.GeometricScaling.value;
+			// LCD
+			// if ( 'GeometricTranslation' in modelNode ) transformData.translation = modelNode.GeometricTranslation.value;
+			// if ( 'GeometricRotation' in modelNode ) transformData.rotation = modelNode.GeometricRotation.value;
+			// if ( 'GeometricScaling' in modelNode ) transformData.scale = modelNode.GeometricScaling.value;
 
 			var transform = generateTransform( transformData );
 
