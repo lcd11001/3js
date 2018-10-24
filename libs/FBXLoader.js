@@ -1268,13 +1268,14 @@ THREE.FBXLoader = ( function () {
 			}
 
 			if ( 'color' in geometry.attributes ) {
-
 				materials.forEach( function ( material ) {
-
 					material.vertexColors = THREE.VertexColors;
-
 				} );
 
+			} else {
+				materials.forEach( function ( material ) {
+					material.vertexColors = 0;
+				} );
 			}
 
 			if ( geometry.FBX_Deformer ) {
