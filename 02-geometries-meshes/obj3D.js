@@ -14,14 +14,15 @@ function init ()
 
     // loadModelJson('monster', '../data/models/monster.json', '../data/textures/');
 
-    // initLoader('../data/textures/Porsche/');
-    loadModelFbx('monster', '../data/models/car_porsche_911_GTS_2018_carpaint_diffuse.fbx', '../data/textures/Porsche/');
+    initLoader('../data/textures/Porsche/');
+    loadModelFbx('car', '../data/models/car_porsche_911_GTS_2018_carpaint_diffuse.fbx', '../data/textures/Porsche/');
+    loadModelFbx2('car2', '../data/models/car_porsche_911_GTS_2018_carpaint_diffuse.fbx', '../data/textures/Porsche/');
 
     // create a camera, which defines where we looking at
     _camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     // position and point the camera to the center
-    _camera.position.set(10, 10, 50);
+    _camera.position.set(0, 30, 50);
     _camera.lookAt(_scene.position);
 
     // create a renderer, set the background color and size
@@ -30,13 +31,13 @@ function init ()
     _renderer.setSize(window.innerWidth, window.innerHeight);
 
     _control = new function() {
-        this.scale = 0.05;
+        this.scale = 0.1;
         
         this.rx = 0;
         this.ry = 0;
         this.rz = 0;
 
-        this.px = 0;
+        this.px = 20;
         this.py = 0;
         this.pz = 0;
     }
@@ -55,14 +56,24 @@ function render()
 {
     requestAnimationFrame(render);
     
-    let monster = _scene.getObjectByName('monster');
-    if (monster)
+    let car = _scene.getObjectByName('car');
+    if (car)
     {
-        monster.scale.set(_control.scale, _control.scale, _control.scale);
+        car.scale.set(_control.scale, _control.scale, _control.scale);
 
-        monster.position.set(_control.px, _control.py, _control.pz);
+        car.position.set(-_control.px, _control.py, _control.pz);
 
-        monster.rotation.set(_control.rx * Math.PI / 180, _control.ry * Math.PI / 180, _control.rz * Math.PI / 180);   
+        car.rotation.set(_control.rx * Math.PI / 180, _control.ry * Math.PI / 180, _control.rz * Math.PI / 180);   
+    }
+
+    let car2 = _scene.getObjectByName('car2');
+    if (car2)
+    {
+        car2.scale.set(_control.scale, _control.scale, _control.scale);
+
+        car2.position.set(_control.px, _control.py, _control.pz);
+
+        car2.rotation.set(_control.rx * Math.PI / 180, _control.ry * Math.PI / 180, _control.rz * Math.PI / 180);   
     }
     
     _renderer.render(_scene, _camera);
@@ -106,11 +117,28 @@ function loadModelFbx(name, modelUrl, texturesPath)
         (sceneGraph) => {
             console.log('loadModelFbx [' + name +'] finish', sceneGraph);
             sceneGraph.name = name;
+            // sceneGraph.position.set(-0.5, 0, 0);
             _scene.add(sceneGraph);
         },
         null, null);
 
     console.log('loadModelFbx ' + modelUrl);
+}
+
+function loadModelFbx2(name, modelUrl, texturesPath)
+{
+    var fbxLoader = new THREE.FBXLoader2();
+    fbxLoader.setResourcePath(texturesPath);
+    fbxLoader.load(modelUrl, 
+        (sceneGraph) => {
+            console.log('loadModelFbx2 [' + name +'] finish', sceneGraph);
+            sceneGraph.name = name;
+            // sceneGraph.position.set(0.5, 0, 0);
+            _scene.add(sceneGraph);
+        },
+        null, null);
+
+    console.log('loadModelFbx2 ' + modelUrl);
 }
 
 function addControls(controlObject)
@@ -120,13 +148,13 @@ function addControls(controlObject)
     gui.add(controlObject, 'scale', 0.01, 2);
     
     let f1 = gui.addFolder('position');
-    f1.open();
-    f1.add(controlObject, 'px', -10, 10);
-    f1.add(controlObject, 'py', -10, 10);
-    f1.add(controlObject, 'pz', -10, 10);
+    f1.close();
+    f1.add(controlObject, 'px', -100, 100);
+    f1.add(controlObject, 'py', -100, 100);
+    f1.add(controlObject, 'pz', -100, 100);
 
     let f2 = gui.addFolder('rotation');
-    f2.close();
+    f2.open();
     f2.add(controlObject, 'rx', 0, 360);
     f2.add(controlObject, 'ry', 0, 360);
     f2.add(controlObject, 'rz', 0, 360);
